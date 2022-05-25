@@ -109,9 +109,13 @@ def dynamicProgram(N,Attraction):
                 for PrevIndex in range(N+1):
                     #If already visited in the sequence of the previous attraction, then ignore
                     if not attraction_index in getSequenceDP(N,Attraction,PrevMatrix,PrevIndex,PrevTime):
-                        PrevAttraction = Attraction[PrevIndex-1]
-                        PrevX = PrevAttraction[0]
-                        PrevY = PrevAttraction[1]
+                        if PrevIndex == 0:
+                            PrevX = 200
+                            PrevY = 200
+                        else:
+                            PrevAttraction = Attraction[PrevIndex-1]
+                            PrevX = PrevAttraction[0]
+                            PrevY = PrevAttraction[1]
                         Dist = math.ceil(math.dist([PrevX,PrevY],[CurrentX,CurrentY]))
                         if PrevTime+Dist <= TimeShouldStart:
                             UtilThisWay = UtilMatrix[PrevIndex][PrevTime]+Utility
