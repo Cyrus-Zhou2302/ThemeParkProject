@@ -11,16 +11,28 @@ def solve(N,Attraction):
 
     UtilMatrix, PrevMatrix = dynamicProgram(N,Attraction)
     Sequence = getSequenceDP(N,Attraction,PrevMatrix,0,1440)
+    Sequence.pop()
     return len(Sequence),Sequence
 
 
 def getSequenceDP(N,Attraction,PrevMatrix,Index,Time):
-    PrevNow = PrevMatrix[Index][Time]
+    res = []
     t = Time
-    while(PrevMatrix[Index][t]==PrevNow):
-        t -= 1
-    t += 1
+    i = Index
 
+    while (i != 0)
+        res.append(i)
+        PrevNow = PrevMatrix[i][t]
+        
+        while(PrevMatrix[i][t]==PrevNow):
+            t -= 1
+
+        t += 1
+
+        t -= dist(i,PrevNow,Attraction)
+        i = PrevNow
+
+    return res
 
 
 def dynamicProgram(N,Attraction):
