@@ -33,27 +33,40 @@ def dynamicProgram(N,Attraction):
         for attraction_index in range(N+1):
             
             #Getting all values from the attraction
-            CurrentAttraction = Attraction[attraction_index]
-            CurrentX = CurrentAttraction[0]
-            CurrentY = CurrentAttraction[1]
-            OpenTime = CurrentAttraction[2]
-            CloseTime = CurrentAttraction[3]
-            Utility = CurrentAttraction[4]
-            Duration = CurrentAttraction[5]
+            #For source node, we hard code the values
+            if attraction == 0:
+                CurrentX = 200
+                CurrentY = 200
+                OpenTime = 0
+                CloseTime = 1440
+                Utility = 0
+                Duration = 0
+
+            #For other nodes, we get the values from the parameter matrix
+            else:
+                CurrentAttraction = Attraction[attraction_index-1]
+                CurrentX = CurrentAttraction[0]
+                CurrentY = CurrentAttraction[1]
+                OpenTime = CurrentAttraction[2]
+                CloseTime = CurrentAttraction[3]
+                Utility = CurrentAttraction[4]
+                Duration = CurrentAttraction[5]
 
             #If there is no way for this attraction to be finished at this moment
             #Set the max utility as the max among anytime before
             TimeShouldStart = timeFinish - Duration
             if not TimeShouldStart in range(OpenTime,CloseTime+1):
-                MaxBefore = 0
+                MaxUtil = 0
                 MaxPrev = -1
                 for t in range(timeFinish):
                     UtilCurrent = UtilMatrix[attraction_index][t]
                     PrevCurrent = PrevMatrix[attraction_index][t]
                     if UtilCurrent > MaxBefore:
-                        MaxBefore = UtilCurrent
-                        MaxPrev = 
-
+                        MaxUtil = UtilCurrent
+                        MaxPrev = PrevCurrent
+                UtilMatrix[attraction_index][timeFinish]=MaxUtil
+                PrevMatrix[attraction_index][timeFinish]=MaxPrev
+                continue
 
 
             MaxUtil = 0
