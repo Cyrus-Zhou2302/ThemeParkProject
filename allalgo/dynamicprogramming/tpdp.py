@@ -3,7 +3,8 @@ import math
 def solve(N,Attraction):
 
     UtilMatrix, PrevMatrix = dynamicProgram(N,Attraction)
-    
+
+def getSequenceDP(N,UtilMatrix,PrevMatrix):
 
 
 
