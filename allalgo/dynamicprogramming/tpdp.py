@@ -2,7 +2,12 @@ import math
 
 def solve(N,Attraction):
 
+
+
     UtilMatrix, PrevMatrix = dynamicProgram(N,Attraction)
+    Sequence = getSequenceDP(UtilMatrix,PrevMatrix)
+    return len(Sequence),Sequence
+
 
 def getSequenceDP(N,UtilMatrix,PrevMatrix):
 
@@ -68,13 +73,13 @@ def dynamicProgram(N,Attraction):
             MaxUtil = 0
             MaxPrev = -1
 
-            for PrevTime in reversed(range(timeFinish)):
+            for PrevTime in reversed(range(TimeShouldStart)):
                 for PrevIndex in range(N+1):
                     PrevAttraction = Attraction[PrevIndex-1]
                     PrevX = PrevAttraction[0]
                     PrevY = PrevAttraction[1]
                     Dist = math.ceil(math.dist([PrevX,PrevY],[CurrentX,CurrentY]))
-                    if PrevTime+Dist <= timeFinish:
+                    if PrevTime+Dist <= TimeShouldStart:
                         UtilThisWay = UtilMatrix[PrevIndex][PrevTime]+Utility
                         if UtilThisWay > MaxUtil:
                             MaxUtil = UtilThisWay
