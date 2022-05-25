@@ -9,7 +9,7 @@ def solve(N,Attraction):
     return len(Sequence),Sequence
 
 
-def getSequenceDP(N,UtilMatrix,PrevMatrix):
+def getSequenceDP(N,UtilMatrix,PrevMatrix,Index,Time):
 
 
 
@@ -73,17 +73,23 @@ def dynamicProgram(N,Attraction):
             MaxUtil = 0
             MaxPrev = -1
 
+
+            #If there is a corresponding start time that would end right
+            #at this moment, then we find the maximum utility from potential
+            #previous attractions
             for PrevTime in reversed(range(TimeShouldStart)):
                 for PrevIndex in range(N+1):
-                    PrevAttraction = Attraction[PrevIndex-1]
-                    PrevX = PrevAttraction[0]
-                    PrevY = PrevAttraction[1]
-                    Dist = math.ceil(math.dist([PrevX,PrevY],[CurrentX,CurrentY]))
-                    if PrevTime+Dist <= TimeShouldStart:
-                        UtilThisWay = UtilMatrix[PrevIndex][PrevTime]+Utility
-                        if UtilThisWay > MaxUtil:
-                            MaxUtil = UtilThisWay
-                            MaxPrev = PrevIndex
+                    #If already visited in the sequence of the previous attraction, then ignore
+                    if not attraction_index in getSequenceDP(N,UtilMatrix,PrevMatrix,PrevIndex,PrevTime):
+                        PrevAttraction = Attraction[PrevIndex-1]
+                        PrevX = PrevAttraction[0]
+                        PrevY = PrevAttraction[1]
+                        Dist = math.ceil(math.dist([PrevX,PrevY],[CurrentX,CurrentY]))
+                        if PrevTime+Dist <= TimeShouldStart:
+                            UtilThisWay = UtilMatrix[PrevIndex][PrevTime]+Utility
+                            if UtilThisWay > MaxUtil:
+                                MaxUtil = UtilThisWay
+                                MaxPrev = PrevIndex
             
             UtilMatrix[attraction_index][timeFinish] = MaxUtil
             PrevMatrix[attraction_index][timeFinish] = MaxPrev
