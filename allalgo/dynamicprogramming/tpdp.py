@@ -14,7 +14,7 @@ def solve(N,Attraction):
     return len(Sequence),Sequence
 
 
-def getSequenceDP(N,UtilMatrix,PrevMatrix,Index,Time):
+def getSequenceDP(N,PrevMatrix,Index,Time):
 
 
 
@@ -85,7 +85,7 @@ def dynamicProgram(N,Attraction):
             for PrevTime in reversed(range(TimeShouldStart)):
                 for PrevIndex in range(N+1):
                     #If already visited in the sequence of the previous attraction, then ignore
-                    if not attraction_index in getSequenceDP(N,UtilMatrix,PrevMatrix,PrevIndex,PrevTime):
+                    if not attraction_index in getSequenceDP(N,PrevMatrix,PrevIndex,PrevTime):
                         PrevAttraction = Attraction[PrevIndex-1]
                         PrevX = PrevAttraction[0]
                         PrevY = PrevAttraction[1]
