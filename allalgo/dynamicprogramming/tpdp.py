@@ -18,7 +18,7 @@ def distanceBetween(start,finish,Attraction):
     finishX = Attraction[finish-1][0]
     finishY = Attraction[finish-1][1]
 
-    return math.ceil(math.dist([startX,startY],[finishX,finishY])
+    return math.ceil(math.dist([startX,startY],[finishX,finishY]))
 
 def getSequenceDP(N,Attraction,PrevMatrix,Index,Time):
     res = []
