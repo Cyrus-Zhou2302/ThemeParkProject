@@ -104,8 +104,8 @@ def dynamicProgram(N,Attraction):
             #previous attractions
             for PrevTime in (range(TimeShouldStart)):
                 for PrevIndex in range(N+1):
-                    print("PrevTime is"+ str(PrevTime))
-                    print("PrevIndex is"+ str(PrevIndex))
+                    #print("PrevTime is"+ str(PrevTime))
+                    #print("PrevIndex is"+ str(PrevIndex))
                     #If already visited in the sequence of the previous attraction, then ignore
                     if not attraction_index in getSequenceDP(N,Attraction,PrevMatrix,PrevIndex,PrevTime):
                         if PrevIndex == 0:
