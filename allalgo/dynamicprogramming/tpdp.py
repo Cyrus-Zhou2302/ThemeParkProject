@@ -16,7 +16,7 @@ def dynamicProgram(N,Attraction):
 
     #Initializes another 2d array to track previously visited node
     #-1 Denotes none
-    TrackMatrix = []*N
+    TrackMatrix = [-1 for i in range(1441)]*N
     #The element of any list in the TrackMatrix should be a tuple specifying time and node
 
 
@@ -24,6 +24,26 @@ def dynamicProgram(N,Attraction):
     for timeFinish in range(1441):
         for attraction_index in range(N):
             
+            #Getting all values from the attraction
+            CurrentAttraction = Attraction[attraction_index]
+            CurrentX = CurrentAttraction[0]
+            CurrentY = CurrentAttraction[1]
+            OpenTime = CurrentAttraction[2]
+            CloseTime = CurrentAttraction[3]
+            Utility = CurrentAttraction[4]
+            Duration = CurrentAttraction[5]
+
+            for loop_column in reversed(range())
+
+                for potential_previous in range(N):
+                    LastTuple = TrackMatrix[potential_previous]
+                    if LastTuple == []:
+                        LastX = 200
+                        LastY = 200
+                        LastFinish = 0
+                    else:
+                        LastAttraction = 
+
 
 
 
