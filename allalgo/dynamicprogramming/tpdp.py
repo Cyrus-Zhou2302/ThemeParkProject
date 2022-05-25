@@ -9,7 +9,7 @@ import signal
 
 def signal_handler(signum, frame):
     raise Exception("Timed out! Try dp")
-
+"""
 def solve(N,Attraction):
 
     signal.signal(signal.SIGALRM, signal_handler)
@@ -19,11 +19,11 @@ def solve(N,Attraction):
     except Exception, msg:
         print "Timed out!"
     return dpsolve(N,Attraction)
-
+"""
 # dynamic progamming solver
-def dpsolve(N,Attraction):
+def solve(N,Attraction):
     UtilMatrix, PrevMatrix = dynamicProgram(N,Attraction)
-    Sequence = PrevMatrix(0,1440)
+    Sequence = PrevMatrix[0][1440]
     return len(Sequence),Sequence
 
 def dynamicProgram(N,Attraction):
@@ -95,7 +95,6 @@ def dynamicProgram(N,Attraction):
             UtilMatrix[attraction_index][timeFinish]=MaxUtil
             PrevMatrix[attraction_index][timeFinish]=MaxPrev+[attraction_index]
                             
-
 
     return UtilMatrix,PrevMatrix
 
