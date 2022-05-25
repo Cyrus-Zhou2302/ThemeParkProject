@@ -8,8 +8,7 @@ from os.path import isfile, join
 def solve(N,Attraction):
 
     UtilMatrix, PrevMatrix = dynamicProgram(N,Attraction)
-    Sequence = getSequenceDP(N,Attraction,PrevMatrix,0,1440)
-    Sequence.pop()
+    Sequence = PrevMatrix(0,1440)
     return len(Sequence),Sequence
 
 def distanceBetween(start,finish,Attraction):
@@ -40,7 +39,7 @@ def getSequenceDP(N,Attraction,PrevMatrix,Index,Time):
         t -= (distanceBetween(i,PrevNow,Attraction)+Attraction[i-1][5])
         i = PrevNow
 
-    return res
+    return reversed(res)
 
 
 def dynamicProgram(N,Attraction):
@@ -54,7 +53,7 @@ def dynamicProgram(N,Attraction):
 
     #Initializes another 2d array to track previously visited node
     #-1 Denotes none
-    Track = [-1 for i in range(1441)]
+    Track = [[] for i in range(1441)]
     PrevMatrix = [Track for i in range(N+1)]
     #The element of any list in the TrackMatrix should be a tuple specifying time and node
 
@@ -62,7 +61,7 @@ def dynamicProgram(N,Attraction):
 
     for timeFinish in range(1441):
         for attraction_index in range(N+1):
-            
+            print("Now on "+str(attraction_index) + " , " + str(timeFinish))
             #Getting all values from the attraction
             #For source node, we hard code the values
             if attraction_index == 0:
@@ -107,7 +106,8 @@ def dynamicProgram(N,Attraction):
                     #print("PrevTime is"+ str(PrevTime))
                     #print("PrevIndex is"+ str(PrevIndex))
                     #If already visited in the sequence of the previous attraction, then ignore
-                    if not attraction_index in getSequenceDP(N,Attraction,PrevMatrix,PrevIndex,PrevTime):
+                    PrevListofPrev = PrevMatrix[PrevIndex][PrevTime]
+                    if not attraction_index in PrevListofPrev:
                         if PrevIndex == 0:
                             PrevX = 200
                             PrevY = 200
@@ -120,7 +120,7 @@ def dynamicProgram(N,Attraction):
                             UtilThisWay = UtilMatrix[PrevIndex][PrevTime]+Utility
                             if UtilThisWay > MaxUtil:
                                 MaxUtil = UtilThisWay
-                                MaxPrev = PrevIndex
+                                MaxPrev = PrevListofPrev + [PrevIndex]
             
             UtilMatrix[attraction_index][timeFinish] = MaxUtil
             PrevMatrix[attraction_index][timeFinish] = MaxPrev
