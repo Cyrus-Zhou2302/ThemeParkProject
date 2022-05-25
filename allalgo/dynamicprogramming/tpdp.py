@@ -75,6 +75,7 @@ def dynamicProgram(N,Attraction):
                 continue
 
 
+            #Storing data at Maximum
             MaxUtil = 0
             MaxPrev = -1
 
