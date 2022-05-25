@@ -2,14 +2,9 @@ import math
 
 def solve(N,Attraction):
 
+    UtilMatrix, PrevMatrix = dynamicProgram(N,Attraction)
+    
 
-def distanceBetween(start,finish,Attraction):
-    startX = Attraction[start][0]
-    startY = Attraction[start][1]
-    finishX = Attraction[finish][0]
-    finishY = Attraction[finish][1]
-
-    return math.ceil(math.dist([startX,startY],[finishX,finishY]))
 
 
 
@@ -70,13 +65,24 @@ def dynamicProgram(N,Attraction):
 
 
             MaxUtil = 0
-            Maxprev = -1
+            MaxPrev = -1
 
-            for loop_column in reversed(range(timeFinish)):
+            for PrevTime in reversed(range(timeFinish)):
+                for PrevIndex in range(N+1):
+                    PrevAttraction = Attraction[PrevIndex-1]
+                    PrevX = PrevAttraction[0]
+                    PrevY = PrevAttraction[1]
+                    Dist = math.ceil(math.dist([PrevX,PrevY],[CurrentX,CurrentY]))
+                    if PrevTime+Dist <= timeFinish:
+                        UtilThisWay = UtilMatrix[PrevIndex][PrevTime]+Utility
+                        if UtilThisWay > MaxUtil:
+                            MaxUtil = UtilThisWay
+                            MaxPrev = PrevIndex
+            
+            UtilMatrix[attraction_index][timeFinish] = MaxUtil
+            PrevMatrix[attraction_index][timeFinish] = MaxPrev
 
-                for potential_previous in range(N):
-                    if 
-
+    return UtilMatrix,PrevMatrix
 
 
 
