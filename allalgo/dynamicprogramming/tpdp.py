@@ -47,11 +47,12 @@ def dynamicProgram(N,Attraction):
     Line = [0 for i in range(1441)]
     #Then get a 2-d array that is composed of (N+1) such lines
     #The first line is for source
-    UtilMatrix = Line*(N+1)
+    UtilMatrix = [Line for i in range(N+1)]
 
     #Initializes another 2d array to track previously visited node
     #-1 Denotes none
-    PrevMatrix = [-1 for i in range(1441)]*(N+1)
+    Track = [-1 for i in range(1441)]
+    PrevMatrix = [Track for i in range(N+1)]
     #The element of any list in the TrackMatrix should be a tuple specifying time and node
 
 
