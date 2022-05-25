@@ -5,44 +5,26 @@ import glob
 from os import listdir
 from os.path import isfile, join
 
+import signal
+
+def signal_handler(signum, frame):
+    raise Exception("Timed out! Try dp")
+
 def solve(N,Attraction):
 
+    signal.signal(signal.SIGALRM, signal_handler)
+    signal.alarm(60)   # 60 seconds
+    try:
+        return btsolve()
+    except Exception, msg:
+        print "Timed out!"
+    return dpsolve(N,Attraction)
+
+# dynamic progamming solver
+def dpsolve(N,Attraction):
     UtilMatrix, PrevMatrix = dynamicProgram(N,Attraction)
     Sequence = PrevMatrix(0,1440)
     return len(Sequence),Sequence
-
-#Not Using this one right now
-def distanceBetween(start,finish,Attraction):
-    startX = Attraction[start-1][0]
-    startY = Attraction[start-1][1]
-    finishX = Attraction[finish-1][0]
-    finishY = Attraction[finish-1][1]
-
-    return math.ceil(math.dist([startX,startY],[finishX,finishY]))
-
-#Not Using this one right now
-def getSequenceDP(N,Attraction,PrevMatrix,Index,Time):
-    res = []
-    t = Time
-    i = Index
-
-    while (i != 0):
-        res.append(i)
-        PrevNow = PrevMatrix[i][t]
-
-        while(PrevMatrix[i][t]==PrevNow):
-            if t > 0:
-                t -= 1
-            else:
-                return res
-
-        t += 1
-
-        t -= (distanceBetween(i,PrevNow,Attraction)+Attraction[i-1][5])
-        i = PrevNow
-
-    return reversed(res)
-
 
 def dynamicProgram(N,Attraction):
     #Subproblem: Finishing at Attraction K, Max Utility by time T
@@ -84,48 +66,36 @@ def dynamicProgram(N,Attraction):
                 Utility = CurrentAttraction[4]
                 Duration = CurrentAttraction[5]
 
-            #If there is no way for this attraction to be finished at this moment
-            #Set the max utility as the max among anytime before
-            TimeShouldStart = timeFinish - Duration
-            if not TimeShouldStart in range(OpenTime,CloseTime+1):
-                MaxUtil = UtilMatrix[attraction_index][timeFinish-1]
-                MaxPrev = PrevMatrix[attraction_index][timeFinish-1]
-                UtilMatrix[attraction_index][timeFinish]=MaxUtil
-                PrevMatrix[attraction_index][timeFinish]=MaxPrev
+            MaxUtil = 0
+            timeShouldStart = timeFinish-Duration
+            if timeShouldStart < 0:
                 continue
 
-
-            #Storing data at Maximum
-            MaxUtil = 0
-            MaxPrev = -1
-
-
-            #If there is a corresponding start time that would end right
-            #at this moment, then we find the maximum utility from potential
-            #previous attractions
-            for PrevTime in (range(TimeShouldStart)):
+            for PrevTime in (range(timeShouldStart+1)):
                 for PrevIndex in range(N+1):
-                    #print("PrevTime is"+ str(PrevTime))
-                    #print("PrevIndex is"+ str(PrevIndex))
-                    #If already visited in the sequence of the previous attraction, then ignore
-                    PrevListofPrev = PrevMatrix[PrevIndex][PrevTime]
-                    if not attraction_index in PrevListofPrev:
+                    UtilThisWay = 0
+                    if PrevIndex == attraction_index:
+                        UtilThisWay = UtilMatrix[PrevIndex][PrevTime]
+                    else:
                         if PrevIndex == 0:
                             PrevX = 200
                             PrevY = 200
                         else:
-                            PrevAttraction = Attraction[PrevIndex-1]
-                            PrevX = PrevAttraction[0]
-                            PrevY = PrevAttraction[1]
+                            prevAttraction = Attraction[PrevIndex-1]
+                            PrevX = prevAttraction[0]
+                            PrevY = prevAttraction[1]
                         Dist = math.ceil(math.dist([PrevX,PrevY],[CurrentX,CurrentY]))
-                        if PrevTime+Dist <= TimeShouldStart:
-                            UtilThisWay = UtilMatrix[PrevIndex][PrevTime]+Utility
-                            if UtilThisWay > MaxUtil:
-                                MaxUtil = UtilThisWay
-                                MaxPrev = PrevListofPrev + [PrevIndex]
-            
-            UtilMatrix[attraction_index][timeFinish] = MaxUtil
-            PrevMatrix[attraction_index][timeFinish] = MaxPrev
+                        if not (attraction_index in PrevMatrix[PrevIndex][PrevTime]):
+                            if (PrevTime+Dist <= CloseTime):
+                                if (PrevTime+Dist+Duration <= timeFinish):
+                                    UtilThisWay = UtilMatrix[PrevIndex][PrevTime]+Utility
+                    if UtilThisWay > MaxUtil:
+                        MaxUtil = UtilThisWay
+                        MaxPrev = PrevMatrix[PrevIndex][PrevTime]
+            UtilMatrix[attraction_index][timeFinish]=MaxUtil
+            PrevMatrix[attraction_index][timeFinish]=MaxPrev+[attraction_index]
+                            
+
 
     return UtilMatrix,PrevMatrix
 
