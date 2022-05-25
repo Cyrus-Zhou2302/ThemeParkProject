@@ -8,7 +8,7 @@ from os.path import isfile, join
 def solve(N,Attraction):
 
     UtilMatrix, PrevMatrix = dynamicProgram(N,Attraction)
-    Sequence = PrevMatrix(0,1440)
+    Sequence = PrevMatrix[0][1440]
     return len(Sequence),Sequence
 
 #Not Using this one right now
