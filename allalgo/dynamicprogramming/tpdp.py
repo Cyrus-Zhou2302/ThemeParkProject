@@ -3,6 +3,13 @@ import math
 def solve(N,Attraction):
 
 
+def distanceBetween(start,finish,Attraction):
+    startX = Attraction[start][0]
+    startY = Attraction[start][1]
+    finishX = Attraction[finish][0]
+    finishY = Attraction[finish][1]
+
+    return math.ceil(math.dist([startX,startY],[finishX,finishY]))
 
 
 
@@ -11,18 +18,19 @@ def dynamicProgram(N,Attraction):
     #Initializes N by 1440 matrix for Utility Tracking
     #First get a 1440 1d array
     Line = [0 for i in range(1441)]
-    #Then get a 2-d array that is composed of N such lines
-    UtilMatrix = Line*N
+    #Then get a 2-d array that is composed of (N+1) such lines
+    #The first line is for source
+    UtilMatrix = Line*(N+1)
 
     #Initializes another 2d array to track previously visited node
     #-1 Denotes none
-    TrackMatrix = [-1 for i in range(1441)]*N
+    PrevMatrix = [-1 for i in range(1441)]*(N+1)
     #The element of any list in the TrackMatrix should be a tuple specifying time and node
 
 
 
     for timeFinish in range(1441):
-        for attraction_index in range(N):
+        for attraction_index in range(N+1):
             
             #Getting all values from the attraction
             CurrentAttraction = Attraction[attraction_index]
@@ -33,16 +41,28 @@ def dynamicProgram(N,Attraction):
             Utility = CurrentAttraction[4]
             Duration = CurrentAttraction[5]
 
-            for loop_column in reversed(range())
+            #If there is no way for this attraction to be finished at this moment
+            #Set the max utility as the max among anytime before
+            TimeShouldStart = timeFinish - Duration
+            if not TimeShouldStart in range(OpenTime,CloseTime+1):
+                MaxBefore = 0
+                MaxPrev = -1
+                for t in range(timeFinish):
+                    UtilCurrent = UtilMatrix[attraction_index][t]
+                    PrevCurrent = PrevMatrix[attraction_index][t]
+                    if UtilCurrent > MaxBefore:
+                        MaxBefore = UtilCurrent
+                        MaxPrev = 
+
+
+
+            MaxUtil = 0
+            Maxprev = -1
+
+            for loop_column in reversed(range(timeFinish)):
 
                 for potential_previous in range(N):
-                    LastTuple = TrackMatrix[potential_previous]
-                    if LastTuple == []:
-                        LastX = 200
-                        LastY = 200
-                        LastFinish = 0
-                    else:
-                        LastAttraction = 
+                    if 
 
 
 
