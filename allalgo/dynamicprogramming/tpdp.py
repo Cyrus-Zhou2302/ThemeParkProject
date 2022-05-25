@@ -7,20 +7,25 @@ from os.path import isfile, join
 
 def solve(N,Attraction):
 
-
-
     UtilMatrix, PrevMatrix = dynamicProgram(N,Attraction)
     Sequence = getSequenceDP(N,Attraction,PrevMatrix,0,1440)
     Sequence.pop()
     return len(Sequence),Sequence
 
+def distanceBetween(start,finish,Attraction):
+    startX = Attraction[start-1][0]
+    startY = Attraction[start-1][1]
+    finishX = Attraction[finish-1][0]
+    finishY = Attraction[finish-1][1]
+
+    return math.ceil(math.dist([startX,startY],[finishX,finishY])
 
 def getSequenceDP(N,Attraction,PrevMatrix,Index,Time):
     res = []
     t = Time
     i = Index
 
-    while (i != 0)
+    while (i != 0):
         res.append(i)
         PrevNow = PrevMatrix[i][t]
         
@@ -29,7 +34,7 @@ def getSequenceDP(N,Attraction,PrevMatrix,Index,Time):
 
         t += 1
 
-        t -= dist(i,PrevNow,Attraction)
+        t -= (distanceBetween(i,PrevNow,Attraction)+Attraction[i-1][5])
         i = PrevNow
 
     return res
@@ -56,7 +61,7 @@ def dynamicProgram(N,Attraction):
             
             #Getting all values from the attraction
             #For source node, we hard code the values
-            if attraction == 0:
+            if attraction_index == 0:
                 CurrentX = 200
                 CurrentY = 200
                 OpenTime = 0
