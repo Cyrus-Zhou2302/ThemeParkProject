@@ -28,9 +28,12 @@ def getSequenceDP(N,Attraction,PrevMatrix,Index,Time):
     while (i != 0):
         res.append(i)
         PrevNow = PrevMatrix[i][t]
-        
+
         while(PrevMatrix[i][t]==PrevNow):
-            t -= 1
+            if t > 0:
+                t -= 1
+            else:
+                return res
 
         t += 1
 
@@ -84,14 +87,8 @@ def dynamicProgram(N,Attraction):
             #Set the max utility as the max among anytime before
             TimeShouldStart = timeFinish - Duration
             if not TimeShouldStart in range(OpenTime,CloseTime+1):
-                MaxUtil = 0
-                MaxPrev = -1
-                for t in range(timeFinish):
-                    UtilCurrent = UtilMatrix[attraction_index][t]
-                    PrevCurrent = PrevMatrix[attraction_index][t]
-                    if UtilCurrent > MaxBefore:
-                        MaxUtil = UtilCurrent
-                        MaxPrev = PrevCurrent
+                MaxUtil = UtilMatrix[attraction_index][timeFinish-1]
+                MaxPrev = PrevMatrix[attraction_index][timeFinish-1]
                 UtilMatrix[attraction_index][timeFinish]=MaxUtil
                 PrevMatrix[attraction_index][timeFinish]=MaxPrev
                 continue
@@ -105,8 +102,10 @@ def dynamicProgram(N,Attraction):
             #If there is a corresponding start time that would end right
             #at this moment, then we find the maximum utility from potential
             #previous attractions
-            for PrevTime in reversed(range(TimeShouldStart)):
+            for PrevTime in (range(TimeShouldStart)):
                 for PrevIndex in range(N+1):
+                    print("PrevTime is"+ str(PrevTime))
+                    print("PrevIndex is"+ str(PrevIndex))
                     #If already visited in the sequence of the previous attraction, then ignore
                     if not attraction_index in getSequenceDP(N,Attraction,PrevMatrix,PrevIndex,PrevTime):
                         if PrevIndex == 0:
