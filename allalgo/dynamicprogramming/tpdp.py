@@ -11,6 +11,7 @@ def solve(N,Attraction):
     Sequence = PrevMatrix(0,1440)
     return len(Sequence),Sequence
 
+#Not Using this one right now
 def distanceBetween(start,finish,Attraction):
     startX = Attraction[start-1][0]
     startY = Attraction[start-1][1]
@@ -19,6 +20,7 @@ def distanceBetween(start,finish,Attraction):
 
     return math.ceil(math.dist([startX,startY],[finishX,finishY]))
 
+#Not Using this one right now
 def getSequenceDP(N,Attraction,PrevMatrix,Index,Time):
     res = []
     t = Time
