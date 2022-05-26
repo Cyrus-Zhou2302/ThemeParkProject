@@ -47,7 +47,7 @@ def dynamicProgram(N,Attractions):
         #Go index by index in each column iteration
         for indexFinish in range(N+1):
             
-            print("Now working on index "+indexFinish+)
+            print("Now working on index "+str(indexFinish)+"/"+str(N)+" at time "+str(timeFinish)+"/1440")
 
             attractionFinish = Attractions[indexFinish]
             XFinish = attractionFinish[0]
