@@ -56,6 +56,9 @@ def dynamicProgram(N,Attractions):
 
             #Case 1: go to an vertex that has not yet been open
             if timeFinish - Duration < OFinish:
+                #Initializes local variables to store information at maximum
+                maxPathPrev = []
+                maxUtilPrev = 0
                 #We loop through all possible previous vertices
                 for indexPrev in range(N+1):
                     attractionPrev = Attractions[indexPrev]
@@ -65,6 +68,23 @@ def dynamicProgram(N,Attractions):
                     #We only need to care about the marginal case at the latest leaving
                     #time from the previous attraction
                     timePrev = timeFinish - Dist
+                    #If the required time is less than zero than we know this is impossible
+                    if timePrev < 0:
+                        continue
+                    #If there is no valid path to the previous attraction at the required
+                    #time, then we know that no path is feasible
+                    pathPrev = PrevMatrix[indexPrev][timePrev]
+                    if pathPrev == []:
+                        continue
+                    #If there is a valid path to the previous attraction at required time
+                    #then we get the utility at that time
+                    utilPrev = UtilMatrix[indexPrev][timePrev]
+                    #If we found this utility to be greater than the original maximum value
+                    #then we replace it and store the path to the current previous at the 
+                    #current required time in the maxUtilPrev variable
+                    if utilPrev > maxUtilPrev:
+                        maxUtilPrev = utilPrev
+                        maxPathPrev = pathPrev
 
             
             #Case 2: go to an vertex that is open
