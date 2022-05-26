@@ -112,7 +112,6 @@ def dynamicProgram(N,Attractions):
             #Case 2: go to an vertex that is closed
             elif timeFinish - Duration > CFinish:
                 UtilMatrix[indexFinish][timeFinish]=-math.inf
-                PrevMatrix[indexFinish][timeFinish]=-math.inf
                 print("The attraction is closed")
 
             ##################################################################################################################
