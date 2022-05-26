@@ -188,73 +188,36 @@ End of Dynamic Programming Solver
 """
 Following is Backtracking Solver:
 """
-class btnode:
-    def __init__(self,idx,x,y,o,c,u,t,d):
-        self.idx = idx
-        self.x = x
-        self.y = y
-        self.o = o
-        self.c = c
-        self.u = u
-        self.t = t
-        self.d = d
-    def disWith(self,btnode):
-        return math.dist([self.x,self.y],[node.x,node.y])
-    def __repr__(self):
-        return str(repr(self.idx))
 
+def minCompleteTime(Attractions,Sequence):
+    TimeNow = 0
+    LastX = 200
+    LastY = 200
+    CurrentX = LastX
+    CurrentY = LastY
 
-def convertToBTNodes(N,Attraction):
-    btlist = []
-    for i in (N+1):
-        a = Attraction[i]
-        d = math.ceil(math.dist([a[0],a[1]],[200,200]))
-        nodenow = btnode(i,a[0],a[1],a[2],a[3],a[4],a[5],d)
-        btlist.append(nodenow)
-    return btlist
-
-def findOptimal(btlist):
-
-
-
-def backTrack(btlist,track,timenow):
-    timeremain = 1440 - timenow
-    tally = 0
-
-    for node in btlist:
-        if node in track:
-            tally += 1
-            continue
-        
-        if len(track)>0:
-            timeBackSource = track[-1].disWith(node)+node.t+node.d
-            if timeBackSource > timeremain:
-                tally += 1
-                continue
-
-            timeToThis = timenow+track[-1].distance(node)
-            if not (node.o <= timeToThis <= node.c):
-                tally += 1
-                continue
-
-    if tally == len(btlist):
-        res.append(track[:])
-        return
+    #Looping to see the current minimum time for finishing
+    #the given Path
+    for index in Sequence:
+        CurrentAttraction = Attraction[index-1]
+        CurrentX = CurrentAttraction[0]
+        CurrentY = CurrentAttraction[1]
+        CurrentOpen = CurrentAttraction[2]
+        CurrentClose = CurrentAttraction[3]
+        Dist = math.ceil(math.dist([LastX,LastY],[CurrentX,CurrentY]))
+        if (TimeNow+Dist) > CurrentClose:
+            return math.inf,CurrentX,CurrentY
+        TimeNow = max(CurrentOpen,(TimeNow+Dist))
     
-    for node in btlist:
-        #We proceed to the next one if the node is already in the track
-        if node in track:
-            continue
-        #
-        if len(track) != 0:
-            timeBackSource = track[-1].distance(node)+node.t+node.d
-            if timeBackSource > time_left:
-                continue
+    return TimeNow,CurrentX,CurrentY
 
-            timeToThis = timenow+track[-1].distance(node)
-            if timeToThis < node.o or timeToThis > node.c:
-                continue
-
+def isFeasible(Attractions,Sequence):
+    TimeFinish,LastX,LastY = minCompleteTime(Attraction,Path)
+    DistToSource = math.ceil(math.dist([LastX,LastY],[200,200]))
+    TimeFinish += DistToSource
+    if TimeFinish > 1440:
+        return False
+    return True
 
 """
 Endof Backtracking Solver:
