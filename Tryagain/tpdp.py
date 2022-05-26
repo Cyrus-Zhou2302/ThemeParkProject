@@ -25,7 +25,7 @@ def solve(N,Attraction):
     attWithSource = [[200,200,0,1440,0,0]]+Attraction
     UtilMatrix, PrevMatrix = dynamicProgram(N,attWithSource)
     print(UtilMatrix)
-    print("UtilMatrx[0][0] is "+str(UtilMatrix[0][0]))
+    print("UtilMatrx[0][1440] is "+str(UtilMatrix[0][0]))
     Sequence = PrevMatrix[0][1440]
     Sequence.pop(0)
 
@@ -33,7 +33,7 @@ def solve(N,Attraction):
 
 def dynamicProgram(N,Attractions):
     #Initialization, Utility Tracker Matrix:
-    UtilLine = [-1 for i in range(1441)]
+    UtilLine = [-math.inf for i in range(1441)]
     UtilMatrix = [UtilLine for i in range(N+1)]
     UtilMatrix[0][0] = 0
 
@@ -81,7 +81,7 @@ def dynamicProgram(N,Attractions):
                     pathPrev = PrevMatrix[indexPrev][timePrev]
                     #If the attraction at the finish time is already in the path
                     #We may not visit it again
-                    if indexPrev in pathPrev:
+                    if (indexPrev in pathPrev):
                         continue
                     #If there is a valid path to the previous attraction at required time
                     #then we get the utility at that time
@@ -112,8 +112,8 @@ def dynamicProgram(N,Attractions):
             
             #Case 2: go to an vertex that is closed
             elif timeFinish - Duration > CFinish:
-                UtilMatrix[indexFinish][timeFinish]=UtilMatrix[indexFinish][timeFinish-1]
-                PrevMatrix[indexFinish][timeFinish]=PrevMatrix[indexFinish][timeFinish-1]
+                UtilMatrix[indexFinish][timeFinish]=-math.inf
+                PrevMatrix[indexFinish][timeFinish]=-math.inf
                 print("The attraction is closed")
 
             ##################################################################################################################
