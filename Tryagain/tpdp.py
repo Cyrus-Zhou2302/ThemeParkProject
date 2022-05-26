@@ -28,6 +28,8 @@ def solve(N,Attraction):
     if len(Sequence) > 2:
         pop.Sequence()
         pop.Sequence(-1)
+    elif len(Sequence) == 1:
+        pop.Sequence()
 
     return len(Sequence),Sequence
 
