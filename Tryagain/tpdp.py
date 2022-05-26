@@ -85,7 +85,18 @@ def dynamicProgram(N,Attractions):
                     if utilPrev > maxUtilPrev:
                         maxUtilPrev = utilPrev
                         maxPathPrev = pathPrev
+            #It is also possible for TAs to wait at the attraction
+            #in this case we may just inherit information from the last minute
+            #We check to see if this is a better choice
+            utilJustInherit = UtilMatrix[indexFinish][timeFinish-1]
+            if utilJustInherit > maxUtilPrev:
+                maxUtilPrev = utilJustInherit
+                maxPathPrev = PrevMatrix[indexFinish][timeFinish-1]
 
+            #After we have found information for the maximum,
+            #We set the corresponding values in matrices
+            UtilMatrix[indexFinish][timeFinish]=maxUtilPrev
+            PrevMatrix[indexFinish][timeFinish]=maxPathPrev
             
             #Case 2: go to an vertex that is open
             if OFinish <= timeFinish - Duration <= CFinish:
