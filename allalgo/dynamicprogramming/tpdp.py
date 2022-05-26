@@ -90,7 +90,7 @@ def dynamicProgram(N,Attraction):
                             PrevX = prevAttraction[0]
                             PrevY = prevAttraction[1]
                         Dist = math.ceil(math.dist([PrevX,PrevY],[CurrentX,CurrentY]))
-                        if not (attraction_index in PrevMatrix[PrevIndex][PrevTime]):
+                        if not (attraction_index in PrevMatrix[PrevTime][PrevIndex]):
                             if (PrevTime+Dist <= CloseTime):
                                 if (PrevTime+Dist+Duration <= timeFinish):
                                     UtilThisWay = UtilMatrix[PrevTime][PrevIndex]+Utility
