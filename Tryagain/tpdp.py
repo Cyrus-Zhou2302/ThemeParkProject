@@ -56,6 +56,15 @@ def dynamicProgram(N,Attractions):
 
             #Case 1: go to an vertex that has not yet been open
             if timeFinish - Duration < OFinish:
+                #We loop through all possible previous vertices
+                for indexPrev in range(N+1):
+                    attractionPrev = Attractions[indexPrev]
+                    XPrev = attractionPrev[0]
+                    YPrev = attractionPrev[1]
+                    Dist = math.ceil(math.dist([XPrev,YPrev],[XFinish,YFinish]))
+                    #We only need to care about the marginal case at the latest leaving
+                    #time from the previous attraction
+                    timePrev = timeFinish - Dist
 
             
             #Case 2: go to an vertex that is open
@@ -63,7 +72,8 @@ def dynamicProgram(N,Attractions):
 
             
             #Case 3: go to an vertex that is closed
-            if timeFinish - Duration  >
+            if timeFinish - Duration  > CFinish:
+                UtilMatrix[indexFinish][timeFinish]=-math.inf
 
 
     return UtilMatrix,PrevMatrix
