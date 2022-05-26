@@ -24,28 +24,26 @@ def solve(N,Attraction):
 def solve(N,Attraction):
     attWithSource = [[200,200,0,1440,0,0]]+Attraction
     UtilMatrix, PrevMatrix = dynamicProgram(N,attWithSource)
+    print(UtilMatrix)
+    print("UtilMatrx[0][0] is "+str(UtilMatrix[0][0]))
     Sequence = PrevMatrix[0][1440]
-    if len(Sequence) > 2:
-        pop.Sequence()
-        pop.Sequence(-1)
-    elif len(Sequence) == 1:
-        pop.Sequence()
+    Sequence.pop(0)
 
     return len(Sequence),Sequence
 
 def dynamicProgram(N,Attractions):
     #Initialization, Utility Tracker Matrix:
-    UtilLine = [-math.inf for i in range(1441)]
+    UtilLine = [-1 for i in range(1441)]
     UtilMatrix = [UtilLine for i in range(N+1)]
     UtilMatrix[0][0] = 0
 
     #Initialization, Previous Path Tracker Matrix:
     PrevLine = [[] for i in range(1441)]
     PrevMatrix = [PrevLine for i in range(N+1)]
-    PrevMatrix[0][0] = [0]
+    PrevMatrix[0][0] = []
 
     #Moving through the two tables column by column
-    for timeFinish in range(1,1441):
+    for timeFinish in range(1441):
         #Go index by index in each column iteration
         for indexFinish in range(N+1):
             
@@ -64,7 +62,7 @@ def dynamicProgram(N,Attractions):
             #Case 1: go to an vertex that has not yet been open
             if timeFinish - Duration < OFinish:
                 #Initializes local variables to store information at maximum
-                maxPathPrev = [0]
+                maxPathPrev = []
                 maxUtilPrev = 0
                 #We loop through all possible previous vertices
                 for indexPrev in range(N+1):
@@ -81,8 +79,6 @@ def dynamicProgram(N,Attractions):
                     #If there is no valid path to the previous attraction at the required
                     #time, then we know that no path is feasible
                     pathPrev = PrevMatrix[indexPrev][timePrev]
-                    if pathPrev == []:
-                        continue
                     #If the attraction at the finish time is already in the path
                     #We may not visit it again
                     if indexPrev in pathPrev:
@@ -90,17 +86,20 @@ def dynamicProgram(N,Attractions):
                     #If there is a valid path to the previous attraction at required time
                     #then we get the utility at that time
                     utilPrev = UtilMatrix[indexPrev][timePrev]
+
+                    if utilPrev < 0:
+                        continue
                     #If we found this utility to be greater than the original maximum value
                     #then we replace it and store the path to the current previous at the 
                     #current required time in the maxUtilPrev variable
-                    if utilPrev > maxUtilPrev:
+                    if utilPrev >= maxUtilPrev:
                         maxUtilPrev = utilPrev
                         maxPathPrev = pathPrev
                 #It is also possible for TAs to wait at the attraction
                 #in this case we may just inherit information from the last minute
                 #We check to see if this is a better choice
                 utilJustInherit = UtilMatrix[indexFinish][timeFinish-1]
-                if utilJustInherit > maxUtilPrev:
+                if utilJustInherit >= maxUtilPrev:
                     maxUtilPrev = utilJustInherit
                     maxPathPrev = PrevMatrix[indexFinish][timeFinish-1]
 
@@ -108,11 +107,19 @@ def dynamicProgram(N,Attractions):
                 #We set the corresponding values in matrices
                 UtilMatrix[indexFinish][timeFinish]=maxUtilPrev
                 PrevMatrix[indexFinish][timeFinish]=maxPathPrev
+
+                print("Got Utility "+str(maxUtilPrev)+" with Path "+str(maxPathPrev))
             
+            #Case 2: go to an vertex that is closed
+            elif timeFinish - Duration > CFinish:
+                UtilMatrix[indexFinish][timeFinish]=UtilMatrix[indexFinish][timeFinish-1]
+                PrevMatrix[indexFinish][timeFinish]=PrevMatrix[indexFinish][timeFinish-1]
+                print("The attraction is closed")
+
             ##################################################################################################################
             ##################################################################################################################
-            #Case 2: go to an vertex that is open
-            if OFinish <= timeFinish - Duration <= CFinish:
+            #Case 3: go to an vertex that is open
+            else:
                 #Initializes local variables to store information at maximum
                 maxPathPrev = [0]
                 maxUtilPrev = 0
@@ -131,35 +138,39 @@ def dynamicProgram(N,Attractions):
                     #If there is no valid path to the previous attraction at the required
                     #time, then we know that no path is feasible
                     pathPrev = PrevMatrix[indexPrev][timePrev]
-                    if pathPrev == []:
-                        continue
                     #If the attraction at the finish time is already in the path
                     #We may not visit it again
                     if indexPrev in pathPrev:
                         continue
                     #If there is a valid path to the previous attraction at required time
                     #then we get the utility at that time plus the utility from this attraction
-                    utilPrev = UtilMatrix[indexPrev][timePrev]+UFinish
+                    utilPrev = UtilMatrix[indexPrev][timePrev]
+                    if utilPrev < 0:
+                        continue
+                    utilPrev += UFinish
                     #If we found this utility to be greater than the original maximum value
                     #then we replace it and store the path to the current previous at the 
                     #current required time in the maxUtilPrev variable
-                    if utilPrev > maxUtilPrev:
+                    if utilPrev >= maxUtilPrev:
                         maxUtilPrev = utilPrev
-                        maxPathPrev = pathPrev + [indexFinish]
+                        maxPathPrev = pathPrev + [indexPrev]
                 #It is also possible for TAs to wait at the attraction
                 #in this case we may just inherit information from the last minute
                 #We check to see if this is a better choice
                 utilJustInherit = UtilMatrix[indexFinish][timeFinish-1]
-                if utilJustInherit > maxUtilPrev:
+                if utilJustInherit >= maxUtilPrev:
                     maxUtilPrev = utilJustInherit
                     maxPathPrev = PrevMatrix[indexFinish][timeFinish-1]
+
+                #After we have found information for the maximum,
+                #We set the corresponding values in matrices
+                UtilMatrix[indexFinish][timeFinish]=maxUtilPrev
+                PrevMatrix[indexFinish][timeFinish]=maxPathPrev
+                print("Got Utility "+str(maxUtilPrev)+"with Path "+str(maxPathPrev))
             
             ##################################################################################################################
             ##################################################################################################################
-            #Case 3: go to an vertex that is closed
-            else:
-                UtilMatrix[indexFinish][timeFinish]=-math.inf
-
+            
 
     return UtilMatrix,PrevMatrix
 
