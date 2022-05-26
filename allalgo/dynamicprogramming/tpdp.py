@@ -75,7 +75,7 @@ def dynamicProgram(N,Attraction):
 
             for PrevTime in (range(timeShouldStart+1)):
                 for PrevIndex in range(N+1):
-                    if prevMatrix[PrevIndex][PrevTime] == []:
+                    if PrevMatrix[PrevIndex][PrevTime] == []:
                         continue
                     UtilThisWay = 0
                     if PrevIndex == attraction_index:
