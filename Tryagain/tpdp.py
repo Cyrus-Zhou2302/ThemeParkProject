@@ -27,7 +27,8 @@ def solve(N,Attraction):
     print(UtilMatrix)
     print("UtilMatrx[0][1440] is "+str(UtilMatrix[0][1440]))
     Sequence = PrevMatrix[0][1440]
-    Sequence.pop(0)
+    if Sequence != []:
+        Sequence.pop(0)
 
     return len(Sequence),Sequence
 
@@ -158,10 +159,10 @@ def dynamicProgram(N,Attractions):
                 #It is also possible for TAs to wait at the attraction
                 #in this case we may just inherit information from the last minute
                 #We check to see if this is a better choice
-                utilJustInherit = UtilMatrix[indexFinish][timeFinish-1]
+                utilJustInherit = UtilMatrix[indexFinish][timeFinish-Duration-1]
                 if utilJustInherit >= maxUtilPrev:
                     maxUtilPrev = utilJustInherit
-                    maxPathPrev = PrevMatrix[indexFinish][timeFinish-1]
+                    maxPathPrev = PrevMatrix[indexFinish][timeFinish-Duration-1]
 
                 #After we have found information for the maximum,
                 #We set the corresponding values in matrices
