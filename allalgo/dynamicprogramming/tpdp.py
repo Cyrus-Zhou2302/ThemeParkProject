@@ -69,6 +69,7 @@ def dynamicProgram(N,Attraction):
                 Duration = CurrentAttraction[5]
 
             MaxUtil = 0
+            MaxPrev = []
             timeShouldStart = timeFinish-Duration
             if timeShouldStart < 0:
                 continue
