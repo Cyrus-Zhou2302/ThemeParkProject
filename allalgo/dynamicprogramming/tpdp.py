@@ -23,7 +23,9 @@ def solve(N,Attraction):
 # dynamic progamming solver
 def solve(N,Attraction):
     UtilMatrix, PrevMatrix = dynamicProgram(N,Attraction)
-    Sequence = PrevMatrix[1440][0][1:]
+    Sequence = PrevMatrix[1440][0]
+    PrevMatrix.pop(0)
+    PrevMatrix.pop()
     return len(Sequence),Sequence
 
 def dynamicProgram(N,Attraction):
