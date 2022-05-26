@@ -24,7 +24,7 @@ def solve(N,Attraction):
 def solve(N,Attraction):
     attWithSource = [[200,200,0,1440,0,0]]+Attraction
     UtilMatrix, PrevMatrix = dynamicProgram(N,attWithSource)
-    print(UtilMatrix)
+    #print(UtilMatrix)
     print("UtilMatrx[0][1440] is "+str(UtilMatrix[0][1440]))
     Sequence = PrevMatrix[0][1440]
     if Sequence != []:
@@ -179,7 +179,7 @@ def dynamicProgram(N,Attractions):
 
 
 
-
+"""
 def read_input(input_text):
     input_split = input_text.split("\n")
     N = int(input_split[0])
@@ -220,6 +220,28 @@ def main():
     #print(a)
     #separator = " "
     #print(separator.join(map(str,l)))
-    
+"""
+
+def utilityTotal(Attraction,Path):
+    acc = 0
+    if Path == None:
+        return 0
+    for i in range(len(Path)):
+        acc += Attraction[i][4]
+    return acc
+
+def read_input():
+    N = int(input())
+    attraction = [[int(i) for i in input().split()] for _ in range(N)]
+    return N, attraction
+
+
+def main():
+    N, attraction = read_input()
+    a, l = solve(N, attraction)
+    print(a)
+    print(l)
+    print(utilityTotal(attraction,l))
+
 if __name__ == '__main__':
     main()
