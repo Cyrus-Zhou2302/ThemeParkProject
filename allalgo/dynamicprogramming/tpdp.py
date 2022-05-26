@@ -37,10 +37,12 @@ def dynamicProgram(N,Attraction):
 
     #Initializes another 2d array to track previously visited node
     #-1 Denotes none
-    Track = [[0] for i in range(1441)]
+    Track = [[] for i in range(1441)]
     PrevMatrix = [Track for i in range(N+1)]
     #The element of any list in the TrackMatrix should be a tuple specifying time and node
 
+
+    PrevMatrix[0][0]=[0]
 
 
     for timeFinish in range(1441):
@@ -73,6 +75,8 @@ def dynamicProgram(N,Attraction):
 
             for PrevTime in (range(timeShouldStart+1)):
                 for PrevIndex in range(N+1):
+                    if prevMatrix[PrevIndex][PrevTime] == []:
+                        continue
                     UtilThisWay = 0
                     if PrevIndex == attraction_index:
                         UtilThisWay = UtilMatrix[PrevIndex][PrevTime]
