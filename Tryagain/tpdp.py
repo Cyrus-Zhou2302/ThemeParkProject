@@ -33,8 +33,10 @@ def solve(N,Attraction):
 
 def dynamicProgram(N,Attractions):
     #Initialization, Utility Tracker Matrix:
-    UtilLine = [-math.inf for i in range(1441)]
+    UtilLine = [0 for i in range(1441)]
     UtilMatrix = [UtilLine for i in range(N+1)]
+    for i in range(N+1):
+        UtilMatrix[i][0]=-math.inf
     UtilMatrix[0][0] = 0
 
     #Initialization, Previous Path Tracker Matrix:
@@ -46,7 +48,7 @@ def dynamicProgram(N,Attractions):
         #Go index by index in each column iteration
         for indexFinish in range(N+1):
             
-            print("Now working on index "+str(indexFinish)+"/"+str(N)+" at time "+str(timeFinish)+"/1440")
+            #print("Now working on index "+str(indexFinish)+"/"+str(N)+" at time "+str(timeFinish)+"/1440")
 
             attractionFinish = Attractions[indexFinish]
             XFinish = attractionFinish[0]
@@ -107,12 +109,13 @@ def dynamicProgram(N,Attractions):
                 UtilMatrix[indexFinish][timeFinish]=maxUtilPrev
                 PrevMatrix[indexFinish][timeFinish]=maxPathPrev
 
-                print("Got Utility "+str(maxUtilPrev)+" with Path "+str(maxPathPrev))
+                #print("Got Utility "+str(maxUtilPrev)+" with Path "+str(maxPathPrev))
             
             #Case 2: go to an vertex that is closed
             elif timeFinish - Duration > CFinish:
-                UtilMatrix[indexFinish][timeFinish]=-math.inf
-                print("The attraction is closed")
+                UtilMatrix[indexFinish][timeFinish]=UtilMatrix[indexFinish][timeFinish-1]
+                PrevMatrix[indexFinish][timeFinish]=PrevMatrix[indexFinish][timeFinish-1]
+                #print("The attraction is closed")
 
             ##################################################################################################################
             ##################################################################################################################
@@ -164,7 +167,7 @@ def dynamicProgram(N,Attractions):
                 #We set the corresponding values in matrices
                 UtilMatrix[indexFinish][timeFinish]=maxUtilPrev
                 PrevMatrix[indexFinish][timeFinish]=maxPathPrev
-                print("Got Utility "+str(maxUtilPrev)+"with Path "+str(maxPathPrev))
+                #print("Got Utility "+str(maxUtilPrev)+"with Path "+str(maxPathPrev))
             
             ##################################################################################################################
             ##################################################################################################################
