@@ -9,7 +9,7 @@ import signal
 
 def signal_handler(signum, frame):
     raise Exception("Timed out! Try dp")
-"""
+
 def solve(N,Attraction):
 
     signal.signal(signal.SIGALRM, signal_handler)
@@ -17,175 +17,248 @@ def solve(N,Attraction):
     try:
         return btsolve()
     except Exception, msg:
-        print "Timed out!"
+        print "Timed out! Now Trying Dynamic Programming"
     return dpsolve(N,Attraction)
+
 """
+Following is dynamic programming Solver:
+"""
+
 # dynamic progamming solver
 def solve(N,Attraction):
-    UtilMatrix, PrevMatrix = dynamicProgram(N,Attraction)
-    Sequence = PrevMatrix[1440][0]
-    if Sequence != []:
-        Sequence.pop(0)
-        Sequence.pop()
+    attWithSource = [[200,200,0,1440,0,0]]+Attraction
+    UtilMatrix, PrevMatrix = dynamicProgram(N,attWithSource)
+    print(UtilMatrix)
+    print("UtilMatrx[0][0] is "+str(UtilMatrix[0][0]))
+    Sequence = PrevMatrix[0][1440]
+    Sequence.pop(0)
+
     return len(Sequence),Sequence
 
-def dynamicProgram(N,Attraction):
-    #Subproblem: Finishing at Attraction K, Max Utility by time T
-    #Initializes N by 1440 matrix for Utility Tracking
-    #First get a 1440 1d array
-    Line = [0 for i in range(N+1)]
-    #Then get a 2-d array that is composed of (N+1) such lines
-    #The first line is for source
-    UtilMatrix = [Line for i in range(1441)]
+def dynamicProgram(N,Attractions):
+    #Initialization, Utility Tracker Matrix:
+    UtilLine = [-1 for i in range(1441)]
+    UtilMatrix = [UtilLine for i in range(N+1)]
+    UtilMatrix[0][0] = 0
 
-    #Initializes another 2d array to track previously visited node
-    #-1 Denotes none
-    Track = [[] for i in range(N+1)]
-    PrevMatrix = [Track for i in range(1441)]
-    #The element of any list in the TrackMatrix should be a tuple specifying time and node
+    #Initialization, Previous Path Tracker Matrix:
+    PrevLine = [[] for i in range(1441)]
+    PrevMatrix = [PrevLine for i in range(N+1)]
+    PrevMatrix[0][0] = []
 
-
-    PrevMatrix[0][0]=[0]
-
-
+    #Moving through the two tables column by column
     for timeFinish in range(1441):
-        for attraction_index in range(N+1):
+        #Go index by index in each column iteration
+        for indexFinish in range(N+1):
+            
+            print("Now working on index "+str(indexFinish)+"/"+str(N)+" at time "+str(timeFinish)+"/1440")
 
-            print("Now on "+str(attraction_index) + " , " + str(timeFinish))
-            #Getting all values from the attraction
-            #For source node, we hard code the values
-            if attraction_index == 0:
-                CurrentX = 200
-                CurrentY = 200
-                OpenTime = 0
-                CloseTime = 1440
-                Utility = 0
-                Duration = 0
+            attractionFinish = Attractions[indexFinish]
+            XFinish = attractionFinish[0]
+            YFinish = attractionFinish[1]
+            OFinish = attractionFinish[2]
+            CFinish = attractionFinish[3]
+            UFinish = attractionFinish[4]
+            Duration = attractionFinish[5]
 
-            #For other nodes, we get the values from the parameter matrix
+            ##################################################################################################################
+            ##################################################################################################################
+            #Case 1: go to an vertex that has not yet been open
+            if timeFinish - Duration < OFinish:
+                #Initializes local variables to store information at maximum
+                maxPathPrev = []
+                maxUtilPrev = 0
+                #We loop through all possible previous vertices
+                for indexPrev in range(N+1):
+                    attractionPrev = Attractions[indexPrev]
+                    XPrev = attractionPrev[0]
+                    YPrev = attractionPrev[1]
+                    Dist = math.ceil(math.dist([XPrev,YPrev],[XFinish,YFinish]))
+                    #We only need to care about the marginal case at the latest leaving
+                    #time from the previous attraction
+                    timePrev = timeFinish - Dist
+                    #If the required time is less than zero than we know this is impossible
+                    if timePrev < 0:
+                        continue
+                    #If there is no valid path to the previous attraction at the required
+                    #time, then we know that no path is feasible
+                    pathPrev = PrevMatrix[indexPrev][timePrev]
+                    #If the attraction at the finish time is already in the path
+                    #We may not visit it again
+                    if indexPrev in pathPrev:
+                        continue
+                    #If there is a valid path to the previous attraction at required time
+                    #then we get the utility at that time
+                    utilPrev = UtilMatrix[indexPrev][timePrev]
+
+                    if utilPrev < 0:
+                        continue
+                    #If we found this utility to be greater than the original maximum value
+                    #then we replace it and store the path to the current previous at the 
+                    #current required time in the maxUtilPrev variable
+                    if utilPrev >= maxUtilPrev:
+                        maxUtilPrev = utilPrev
+                        maxPathPrev = pathPrev
+                #It is also possible for TAs to wait at the attraction
+                #in this case we may just inherit information from the last minute
+                #We check to see if this is a better choice
+                utilJustInherit = UtilMatrix[indexFinish][timeFinish-1]
+                if utilJustInherit >= maxUtilPrev:
+                    maxUtilPrev = utilJustInherit
+                    maxPathPrev = PrevMatrix[indexFinish][timeFinish-1]
+
+                #After we have found information for the maximum,
+                #We set the corresponding values in matrices
+                UtilMatrix[indexFinish][timeFinish]=maxUtilPrev
+                PrevMatrix[indexFinish][timeFinish]=maxPathPrev
+
+                print("Got Utility "+str(maxUtilPrev)+" with Path "+str(maxPathPrev))
+            
+            #Case 2: go to an vertex that is closed
+            elif timeFinish - Duration > CFinish:
+                UtilMatrix[indexFinish][timeFinish]=UtilMatrix[indexFinish][timeFinish-1]
+                PrevMatrix[indexFinish][timeFinish]=PrevMatrix[indexFinish][timeFinish-1]
+                print("The attraction is closed")
+
+            ##################################################################################################################
+            ##################################################################################################################
+            #Case 3: go to an vertex that is open
             else:
-                CurrentAttraction = Attraction[attraction_index-1]
-                CurrentX = CurrentAttraction[0]
-                CurrentY = CurrentAttraction[1]
-                OpenTime = CurrentAttraction[2]
-                CloseTime = CurrentAttraction[3]
-                Utility = CurrentAttraction[4]
-                Duration = CurrentAttraction[5]
+                #Initializes local variables to store information at maximum
+                maxPathPrev = [0]
+                maxUtilPrev = 0
+                #We loop through all possible previous vertices
+                for indexPrev in range(N+1):
+                    attractionPrev = Attractions[indexPrev]
+                    XPrev = attractionPrev[0]
+                    YPrev = attractionPrev[1]
+                    Dist = math.ceil(math.dist([XPrev,YPrev],[XFinish,YFinish]))
+                    #We only need to care about the marginal case at the latest leaving
+                    #time from the previous attraction
+                    timePrev = timeFinish - Dist - Duration
+                    #If the required time is less than zero than we know this is impossible
+                    if timePrev < 0:
+                        continue
+                    #If there is no valid path to the previous attraction at the required
+                    #time, then we know that no path is feasible
+                    pathPrev = PrevMatrix[indexPrev][timePrev]
+                    #If the attraction at the finish time is already in the path
+                    #We may not visit it again
+                    if indexPrev in pathPrev:
+                        continue
+                    #If there is a valid path to the previous attraction at required time
+                    #then we get the utility at that time plus the utility from this attraction
+                    utilPrev = UtilMatrix[indexPrev][timePrev]
+                    if utilPrev < 0:
+                        continue
+                    utilPrev += UFinish
+                    #If we found this utility to be greater than the original maximum value
+                    #then we replace it and store the path to the current previous at the 
+                    #current required time in the maxUtilPrev variable
+                    if utilPrev >= maxUtilPrev:
+                        maxUtilPrev = utilPrev
+                        maxPathPrev = pathPrev + [indexPrev]
+                #It is also possible for TAs to wait at the attraction
+                #in this case we may just inherit information from the last minute
+                #We check to see if this is a better choice
+                utilJustInherit = UtilMatrix[indexFinish][timeFinish-1]
+                if utilJustInherit >= maxUtilPrev:
+                    maxUtilPrev = utilJustInherit
+                    maxPathPrev = PrevMatrix[indexFinish][timeFinish-1]
 
-            #Visit attraction_index, but it has not opened up yet
-            if timeFinish < OpenTime + Duration:
-                UtilMatrix[timeFinish][attraction_index] = 0
-                continue
+                #After we have found information for the maximum,
+                #We set the corresponding values in matrices
+                UtilMatrix[indexFinish][timeFinish]=maxUtilPrev
+                PrevMatrix[indexFinish][timeFinish]=maxPathPrev
+                print("Got Utility "+str(maxUtilPrev)+"with Path "+str(maxPathPrev))
+            
+            ##################################################################################################################
+            ##################################################################################################################
+            
 
-            #Visit attraction_index, and it has already closed
-            if timeFinish > CloseTime + Duration:
-                UtilMatrix[timeFinish][attraction_index] = UtilMatrix[timeFinish-1][attraction_index]
-                continue
-            
-            #Visit attraction_index, and it is currently open
-            if OpenTime + Duration <= timeFinish <= CloseTime + Duration:  
-                MaxUtil = 0
-                MaxPrev = []
-                for PrevIndex in range(N+1):
-                    if PrevIndex == 0:
-                        PrevX = 200
-                        PrevY = 200
-                    else:
-                        PrevAttraction = Attraction[PrevIndex-1]
-                        PrevX = PrevAttraction[0]
-                        PrevY = PrevAttraction[1]
-                    Dist = math.ceil(math.dist([PrevX,PrevY],[CurrentX,CurrentY]))
-                    PrevTime = timeFinish - Duration - Dist
-                    if PrevIndex == attraction_index:
-                        UtilThisWay = UtilMatrix[timeFinish-1][PrevIndex]
-                        PrevThisWay = PrevMatrix[timeFinish-1][PrevIndex]
-                    else:
-                        if not (attraction_index in PrevMatrix[PrevTime][PrevIndex]):
-                            UtilThisWay = UtilMatrix[PrevTime][PrevIndex]+Utility
-                            PrevThisWay = PrevMatrix[PrevTime][PrevIndex]+[attraction_index]
-                    if UtilThisWay > MaxUtil:
-                        MaxUtil = UtilThisWay
-                        MaxPrev = PrevThisWay
-                UtilMatrix[timeFinish][attraction_index]=MaxUtil
-                PrevMatrix[timeFinish][attraction_index]=MaxPrev
-            
     return UtilMatrix,PrevMatrix
 
 
-class Vertex:
-    def __init__(self,index,x,y,open,close,util,dur,distosource):
-        self.index = index
+
+"""
+End of Dynamic Programming Solver
+"""
+
+
+"""
+Following is Backtracking Solver:
+"""
+class btnode:
+    def __init__(self,idx,x,y,o,c,u,t,d):
+        self.idx = idx
         self.x = x
         self.y = y
-        self.open = open
-        self.close = close
-        self.util = util
-        self.dur = dur
-        self.distosource = distosource
+        self.o = o
+        self.c = c
+        self.u = u
+        self.t = t
+        self.d = d
+    def disWith(self,btnode):
+        return math.dist([self.x,self.y],[node.x,node.y])
     def __repr__(self):
-        return "Node "+repr(self.i)
-    def distanceBetween(self,Vertex):
-        return (math.dist([self.x,self.y],[Vertex.x,Vertex.y]))
+        return str(repr(self.idx))
 
 
-res = []
+def convertToBTNodes(N,Attraction):
+    btlist = []
+    for i in (N+1):
+        a = Attraction[i]
+        d = math.ceil(math.dist([a[0],a[1]],[200,200]))
+        nodenow = btnode(i,a[0],a[1],a[2],a[3],a[4],a[5],d)
+        btlist.append(nodenow)
+    return btlist
 
-def getPath(list):
-    track = []
-    backtrack()
+def findOptimal(btlist):
 
-def backTrack(list,track,timenow):
+
+
+def backTrack(btlist,track,timenow):
     timeremain = 1440 - timenow
     tally = 0
-    for vertex in list:
-        if vertex in track:
+
+    for node in btlist:
+        if node in track:
             tally += 1
-        
-        elif len(track) != 0:
-            timeWouldTake = track[-1].distanceBetween(vertex)+vertex.dur+vertex.distosource
-            if timeWouldTake > timeremain:
-                tally += 1
-        
-            elif timenow+track[-1].distanceBetween(vertex) < vertex.open:
-                tally += 1
-            
-            elif timenow+track[-1].distanceBetween(vertex) > vertex.close:
-                tally += 1
-
-    if tally == len(list):
-        res.append(track([:]))
-        return
-
-    for vertex in list:
-        
-        if vertex in track:
             continue
         
-        if len(track) > 0:
-            if track[-1].distanceBetween(vertex)+vertex.dur+vertex.distosource > timeremain:
+        if len(track)>0:
+            timeBackSource = track[-1].disWith(node)+node.t+node.d
+            if timeBackSource > timeremain:
+                tally += 1
                 continue
 
-            if timenow + track[-1].distanceBetween(vertex) < vertex.open:
+            timeToThis = timenow+track[-1].distance(node)
+            if not (node.o <= timeToThis <= node.c):
+                tally += 1
                 continue
 
-            if timenow + track[-1].distanceBetween(vertex) > vertex.close:
+    if tally == len(btlist):
+        res.append(track[:])
+        return
+    
+    for node in btlist:
+        #We proceed to the next one if the node is already in the track
+        if node in track:
+            continue
+        #
+        if len(track) != 0:
+            timeBackSource = track[-1].distance(node)+node.t+node.d
+            if timeBackSource > time_left:
                 continue
 
-        timedistance = 0
+            timeToThis = timenow+track[-1].distance(node)
+            if timeToThis < node.o or timeToThis > node.c:
+                continue
 
-        if(len(track) > 0):
-            timedistance = math.ceil(track[-1].distance(vertex))
-        
-        timeTake = vertex.dur + timedistance
 
-        track.append(vertex)
-
-        current_time += timeTake
-
-        track.remove(vertex)
-
-def convertToVertices(N,Attraction):
-
+"""
+Endof Backtracking Solver:
+"""
 
 def read_input(input_text):
     input_split = input_text.split("\n")
