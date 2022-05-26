@@ -37,7 +37,7 @@ def dynamicProgram(N,Attraction):
 
     #Initializes another 2d array to track previously visited node
     #-1 Denotes none
-    Track = [[] for i in range(1441)]
+    Track = [[0] for i in range(1441)]
     PrevMatrix = [Track for i in range(N+1)]
     #The element of any list in the TrackMatrix should be a tuple specifying time and node
 
