@@ -204,10 +204,11 @@ def minCompleteTime(Attractions,Sequence):
         CurrentY = CurrentAttraction[1]
         CurrentOpen = CurrentAttraction[2]
         CurrentClose = CurrentAttraction[3]
+        Duration = CurrentAttraction[5]
         Dist = math.ceil(math.dist([LastX,LastY],[CurrentX,CurrentY]))
         if (TimeNow+Dist) > CurrentClose:
             return math.inf,CurrentX,CurrentY
-        TimeNow = max(CurrentOpen,(TimeNow+Dist))
+        TimeNow = max(CurrentOpen,(TimeNow+Dist))+Duration
     
     return TimeNow,CurrentX,CurrentY
 
@@ -218,6 +219,13 @@ def isFeasible(Attractions,Sequence):
     if TimeFinish > 1440:
         return False
     return True
+
+def backTrack(N,Attractions):
+    Sequence = []
+    i = 1
+    while len(Sequence) > 0:
+        if isFeasible(Attractions,Sequence):
+            Sequence + []
 
 """
 Endof Backtracking Solver:
