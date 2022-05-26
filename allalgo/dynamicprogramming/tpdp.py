@@ -47,6 +47,7 @@ def dynamicProgram(N,Attraction):
 
     for timeFinish in range(1441):
         for attraction_index in range(N+1):
+
             print("Now on "+str(attraction_index) + " , " + str(timeFinish))
             #Getting all values from the attraction
             #For source node, we hard code the values
@@ -67,6 +68,22 @@ def dynamicProgram(N,Attraction):
                 CloseTime = CurrentAttraction[3]
                 Utility = CurrentAttraction[4]
                 Duration = CurrentAttraction[5]
+
+            #Visit attraction_index, but it has not opened up yet
+            if timeFinish < OpenTime + Duration:
+                UtilMatrix[timeFinish][attraction_index] = 0
+            
+            #Visit attraction_index, and it is currently open
+            if OpenTime + Duration <= timeFinish <= CloseTime + Duration:  
+
+            
+            #Visit attraction_index, and it has already closed
+            if timeFinish > CloseTime + Duration:
+                UtilMatrix[timeFinish][attraction_index] = UtilMatrix[timeFinish-1][attraction_index]
+
+
+
+
 
             MaxUtil = 0
             MaxPrev = []
