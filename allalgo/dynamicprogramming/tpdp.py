@@ -23,22 +23,22 @@ def solve(N,Attraction):
 # dynamic progamming solver
 def solve(N,Attraction):
     UtilMatrix, PrevMatrix = dynamicProgram(N,Attraction)
-    Sequence = PrevMatrix[0][1440]
+    Sequence = PrevMatrix[1440][0][1:]
     return len(Sequence),Sequence
 
 def dynamicProgram(N,Attraction):
     #Subproblem: Finishing at Attraction K, Max Utility by time T
     #Initializes N by 1440 matrix for Utility Tracking
     #First get a 1440 1d array
-    Line = [0 for i in range(1441)]
+    Line = [0 for i in range(N+1)]
     #Then get a 2-d array that is composed of (N+1) such lines
     #The first line is for source
-    UtilMatrix = [Line for i in range(N+1)]
+    UtilMatrix = [Line for i in range(1441)]
 
     #Initializes another 2d array to track previously visited node
     #-1 Denotes none
-    Track = [[] for i in range(1441)]
-    PrevMatrix = [Track for i in range(N+1)]
+    Track = [[] for i in range(N+1)]
+    PrevMatrix = [Track for i in range(1441)]
     #The element of any list in the TrackMatrix should be a tuple specifying time and node
 
 
@@ -76,11 +76,11 @@ def dynamicProgram(N,Attraction):
 
             for PrevTime in (range(timeShouldStart+1)):
                 for PrevIndex in range(N+1):
-                    if PrevMatrix[PrevIndex][PrevTime] == []:
+                    if PrevMatrix[PrevTime][PrevIndex] == []:
                         continue
                     UtilThisWay = 0
                     if PrevIndex == attraction_index:
-                        UtilThisWay = UtilMatrix[PrevIndex][PrevTime]
+                        UtilThisWay = UtilMatrix[PrevTime][PrevIndex]
                     else:
                         if PrevIndex == 0:
                             PrevX = 200
@@ -93,12 +93,12 @@ def dynamicProgram(N,Attraction):
                         if not (attraction_index in PrevMatrix[PrevIndex][PrevTime]):
                             if (PrevTime+Dist <= CloseTime):
                                 if (PrevTime+Dist+Duration <= timeFinish):
-                                    UtilThisWay = UtilMatrix[PrevIndex][PrevTime]+Utility
+                                    UtilThisWay = UtilMatrix[PrevTime][PrevIndex]+Utility
                     if UtilThisWay > MaxUtil:
                         MaxUtil = UtilThisWay
-                        MaxPrev = PrevMatrix[PrevIndex][PrevTime]
-            UtilMatrix[attraction_index][timeFinish]=MaxUtil
-            PrevMatrix[attraction_index][timeFinish]=MaxPrev+[attraction_index]
+                        MaxPrev = PrevMatrix[PrevTime][PrevIndex]
+            UtilMatrix[timeFinish][attraction_index]=MaxUtil
+            PrevMatrix[timeFinish][attraction_index]=MaxPrev+[attraction_index]
                             
 
     return UtilMatrix,PrevMatrix
