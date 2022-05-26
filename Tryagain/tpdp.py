@@ -25,9 +25,10 @@ def solve(N,Attraction):
     attWithSource = [[200,200,0,1440,0,0]]+Attraction
     UtilMatrix, PrevMatrix = dynamicProgram(N,attWithSource)
     Sequence = PrevMatrix[0][1440]
-    if Sequence != []:
-        Sequence.pop(0)
-        Sequence.pop()
+    if len(Sequence) > 2:
+        pop.Sequence()
+        pop.Sequence(-1)
+
     return len(Sequence),Sequence
 
 def dynamicProgram(N,Attractions):
@@ -45,6 +46,8 @@ def dynamicProgram(N,Attractions):
     for timeFinish in range(1,1441):
         #Go index by index in each column iteration
         for indexFinish in range(N+1):
+            
+            print("Now working on index "+indexFinish+)
 
             attractionFinish = Attractions[indexFinish]
             XFinish = attractionFinish[0]
