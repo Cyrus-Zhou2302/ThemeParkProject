@@ -25,7 +25,7 @@ def solve(N,Attraction):
     attWithSource = [[200,200,0,1440,0,0]]+Attraction
     UtilMatrix, PrevMatrix = dynamicProgram(N,attWithSource)
     print(UtilMatrix)
-    print("UtilMatrx[0][1440] is "+str(UtilMatrix[0][0]))
+    print("UtilMatrx[0][1440] is "+str(UtilMatrix[0][1440]))
     Sequence = PrevMatrix[0][1440]
     Sequence.pop(0)
 
