@@ -23,17 +23,26 @@ def solve(N,Attraction):
 # dynamic progamming solver
 def solve(N,Attraction):
     attWithSource = [[200,200,0,1440,0,0]]+Attraction
-    UtilMatrix, PrevMatrix = dynamicProgram(N,Attraction)
+    UtilMatrix, PrevMatrix = dynamicProgram(N,attWithSource)
     Sequence = PrevMatrix[1440][0]
     if Sequence != []:
         Sequence.pop(0)
         Sequence.pop()
     return len(Sequence),Sequence
 
-def dynamicProgram(N,Attraction):
-    #Initialization:
+def dynamicProgram(N,Attractions):
+    #Initialization, Utility Tracker Matrix:
     UtilLine = [-math.inf for i in range(1441)]
     UtilMatrix = [UtilLine for i in range(N+1)]
+    UtilMatrix[0][0] = 0
+
+    #Initialization, Previous Path Tracker Matrix:
+    PrevLine = [[] for i in range(1441)]
+    PrevMatrix = [PrevLine for i in range(N+1)]
+    PrevMatrix[0][0] = [0]
+
+    
+
 
     return UtilMatrix,PrevMatrix
 
