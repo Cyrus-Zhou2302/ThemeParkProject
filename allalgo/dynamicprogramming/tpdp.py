@@ -91,7 +91,7 @@ def dynamicProgram(N,Attraction):
                         PrevAttraction = Attraction[PrevIndex-1]
                         PrevX = PrevAttraction[0]
                         PrevY = PrevAttraction[1]
-                    Dist = math.ceil([PrevX,PrevY],[CurrentX,CurrentY])
+                    Dist = math.ceil(math.dist([PrevX,PrevY],[CurrentX,CurrentY]))
                     PrevTime = timeFinish - Duration - Dist
                     if PrevIndex == attraction_index:
                         UtilThisWay = UtilMatrix[timeFinish-1][PrevIndex]
