@@ -125,8 +125,66 @@ class Vertex:
     def __repr__(self):
         return "Node "+repr(self.i)
     def distanceBetween(self,Vertex):
-        return math.ceil(math.dist([self.x,self.y],[Vertex.x,Vertex.y]))
+        return (math.dist([self.x,self.y],[Vertex.x,Vertex.y]))
 
+
+res = []
+
+def getPath(list):
+    track = []
+    backtrack()
+
+def backTrack(list,track,timenow):
+    timeremain = 1440 - timenow
+    tally = 0
+    for vertex in list:
+        if vertex in track:
+            tally += 1
+        
+        elif len(track) != 0:
+            timeWouldTake = track[-1].distanceBetween(vertex)+vertex.dur+vertex.distosource
+            if timeWouldTake > timeremain:
+                tally += 1
+        
+            elif timenow+track[-1].distanceBetween(vertex) < vertex.open:
+                tally += 1
+            
+            elif timenow+track[-1].distanceBetween(vertex) > vertex.close:
+                tally += 1
+
+    if tally == len(list):
+        res.append(track([:]))
+        return
+
+    for vertex in list:
+        
+        if vertex in track:
+            continue
+        
+        if len(track) > 0:
+            if track[-1].distanceBetween(vertex)+vertex.dur+vertex.distosource > timeremain:
+                continue
+
+            if timenow + track[-1].distanceBetween(vertex) < vertex.open:
+                continue
+
+            if timenow + track[-1].distanceBetween(vertex) > vertex.close:
+                continue
+
+        timedistance = 0
+
+        if(len(track) > 0):
+            timedistance = math.ceil(track[-1].distance(vertex))
+        
+        timeTake = vertex.dur + timedistance
+
+        track.append(vertex)
+
+        current_time += timeTake
+
+        track.remove(vertex)
+
+def convertToVertices(N,Attraction):
 
 
 def read_input(input_text):
