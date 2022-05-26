@@ -41,7 +41,29 @@ def dynamicProgram(N,Attractions):
     PrevMatrix = [PrevLine for i in range(N+1)]
     PrevMatrix[0][0] = [0]
 
-    
+    #Moving through the two tables column by column
+    for timeFinish in range(1,1441):
+        #Go index by index in each column iteration
+        for indexFinish in range(N+1):
+
+            attractionFinish = Attractions[indexFinish]
+            XFinish = attractionFinish[0]
+            YFinish = attractionFinish[1]
+            OFinish = attractionFinish[2]
+            CFinish = attractionFinish[3]
+            UFinish = attractionFinish[4]
+            Duration = attractionFinish[5]
+
+            #Case 1: go to an vertex that has not yet been open
+            if timeFinish - Duration < OFinish:
+
+            
+            #Case 2: go to an vertex that is open
+            if OFinish <= timeFinish - Duration <= CFinish:
+
+            
+            #Case 3: go to an vertex that is closed
+            if timeFinish - Duration  >
 
 
     return UtilMatrix,PrevMatrix
