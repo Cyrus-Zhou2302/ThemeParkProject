@@ -112,6 +112,20 @@ def dynamicProgram(N,Attraction):
     return UtilMatrix,PrevMatrix
 
 
+class Vertex:
+    def __init__(self,index,x,y,open,close,util,dur,distosource):
+        self.index = index
+        self.x = x
+        self.y = y
+        self.open = open
+        self.close = close
+        self.util = util
+        self.dur = dur
+        self.distosource = distosource
+    def __repr__(self):
+        return "Node "+repr(self.i)
+    def distanceBetween(self,Vertex):
+        return math.ceil(math.dist([self.x,self.y],[Vertex.x,Vertex.y]))
 
 
 
