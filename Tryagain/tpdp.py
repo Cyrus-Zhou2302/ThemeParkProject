@@ -99,10 +99,10 @@ def dynamicProgram(N,Attractions):
                     maxUtilPrev = utilJustInherit
                     maxPathPrev = PrevMatrix[indexFinish][timeFinish-1]
 
-            #After we have found information for the maximum,
-            #We set the corresponding values in matrices
-            UtilMatrix[indexFinish][timeFinish]=maxUtilPrev
-            PrevMatrix[indexFinish][timeFinish]=maxPathPrev
+                #After we have found information for the maximum,
+                #We set the corresponding values in matrices
+                UtilMatrix[indexFinish][timeFinish]=maxUtilPrev
+                PrevMatrix[indexFinish][timeFinish]=maxPathPrev
             
             ##################################################################################################################
             ##################################################################################################################
