@@ -72,52 +72,40 @@ def dynamicProgram(N,Attraction):
             #Visit attraction_index, but it has not opened up yet
             if timeFinish < OpenTime + Duration:
                 UtilMatrix[timeFinish][attraction_index] = 0
-            
-            #Visit attraction_index, and it is currently open
-            if OpenTime + Duration <= timeFinish <= CloseTime + Duration:  
+                continue
 
-            
             #Visit attraction_index, and it has already closed
             if timeFinish > CloseTime + Duration:
                 UtilMatrix[timeFinish][attraction_index] = UtilMatrix[timeFinish-1][attraction_index]
-
-
-
-
-
-            MaxUtil = 0
-            MaxPrev = []
-            timeShouldStart = timeFinish-Duration
-            if timeShouldStart < 0:
                 continue
-
-            for PrevTime in (range(timeShouldStart+1)):
+            
+            #Visit attraction_index, and it is currently open
+            if OpenTime + Duration <= timeFinish <= CloseTime + Duration:  
+                MaxUtil = 0
+                MaxPrev = []
                 for PrevIndex in range(N+1):
-                    if PrevMatrix[PrevTime][PrevIndex] == []:
-                        continue
-                    UtilThisWay = 0
-                    if PrevIndex == attraction_index:
-                        UtilThisWay = UtilMatrix[PrevTime][PrevIndex]
+                    if PrevIndex == 0:
+                        PrevX = 200
+                        PrevY = 200
                     else:
-                        if PrevIndex == 0:
-                            PrevX = 200
-                            PrevY = 200
-                        else:
-                            prevAttraction = Attraction[PrevIndex-1]
-                            PrevX = prevAttraction[0]
-                            PrevY = prevAttraction[1]
-                        Dist = math.ceil(math.dist([PrevX,PrevY],[CurrentX,CurrentY]))
+                        PrevAttraction = Attraction[PrevIndex-1]
+                        PrevX = PrevAttraction[0]
+                        PrevY = PrevAttraction[1]
+                    Dist = math.ceil([PrevX,PrevY],[CurrentX,CurrentY])
+                    PrevTime = timeFinish - Duration - Dist
+                    if PrevIndex == attraction_index:
+                        UtilThisWay = UtilMatrix[timeFinish-1][PrevIndex]
+                        PrevThisWay = PrevMatrix[timeFinish-1][PrevIndex]
+                    else:
                         if not (attraction_index in PrevMatrix[PrevTime][PrevIndex]):
-                            if (PrevTime+Dist <= CloseTime):
-                                if (PrevTime+Dist+Duration <= timeFinish):
-                                    UtilThisWay = UtilMatrix[PrevTime][PrevIndex]+Utility
+                            UtilThisWay = UtilMatrix[PrevTime][PrevIndex]+Utility
+                            PrevThisWay = PrevMatrix[PrevTime][PrevIndex]+[attraction_index]
                     if UtilThisWay > MaxUtil:
                         MaxUtil = UtilThisWay
-                        MaxPrev = PrevMatrix[PrevTime][PrevIndex]
-            UtilMatrix[timeFinish][attraction_index]=MaxUtil
-            PrevMatrix[timeFinish][attraction_index]=MaxPrev+[attraction_index]
-                            
-
+                        MaxPrev = PrevThisWay
+                UtilMatrix[timeFinish][attraction_index]=MaxUtil
+                PrevMatrix[timeFinish][attraction_index]=MaxPrev
+            
     return UtilMatrix,PrevMatrix
 
 
