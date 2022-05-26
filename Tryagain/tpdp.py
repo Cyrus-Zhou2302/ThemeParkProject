@@ -40,7 +40,6 @@ def dynamicProgram(N,Attractions):
     #Initialization, Previous Path Tracker Matrix:
     PrevLine = [[] for i in range(1441)]
     PrevMatrix = [PrevLine for i in range(N+1)]
-    PrevMatrix[0][0] = []
 
     #Moving through the two tables column by column
     for timeFinish in range(1441):
@@ -69,7 +68,7 @@ def dynamicProgram(N,Attractions):
                     attractionPrev = Attractions[indexPrev]
                     XPrev = attractionPrev[0]
                     YPrev = attractionPrev[1]
-                    Dist = math.ceil(math.dist([XPrev,YPrev],[XFinish,YFinish]))
+                    Dist = int(math.ceil(math.dist([XPrev,YPrev],[XFinish,YFinish])))
                     #We only need to care about the marginal case at the latest leaving
                     #time from the previous attraction
                     timePrev = timeFinish - Dist
@@ -81,7 +80,7 @@ def dynamicProgram(N,Attractions):
                     pathPrev = PrevMatrix[indexPrev][timePrev]
                     #If the attraction at the finish time is already in the path
                     #We may not visit it again
-                    if (indexPrev in pathPrev):
+                    if indexPrev in pathPrev:
                         continue
                     #If there is a valid path to the previous attraction at required time
                     #then we get the utility at that time
@@ -128,7 +127,7 @@ def dynamicProgram(N,Attractions):
                     attractionPrev = Attractions[indexPrev]
                     XPrev = attractionPrev[0]
                     YPrev = attractionPrev[1]
-                    Dist = math.ceil(math.dist([XPrev,YPrev],[XFinish,YFinish]))
+                    Dist = int(math.ceil(math.dist([XPrev,YPrev],[XFinish,YFinish])))
                     #We only need to care about the marginal case at the latest leaving
                     #time from the previous attraction
                     timePrev = timeFinish - Dist - Duration
@@ -153,7 +152,7 @@ def dynamicProgram(N,Attractions):
                     #current required time in the maxUtilPrev variable
                     if utilPrev >= maxUtilPrev:
                         maxUtilPrev = utilPrev
-                        maxPathPrev = pathPrev + [indexPrev]
+                        maxPathPrev = pathPrev + [int(indexPrev)]
                 #It is also possible for TAs to wait at the attraction
                 #in this case we may just inherit information from the last minute
                 #We check to see if this is a better choice
