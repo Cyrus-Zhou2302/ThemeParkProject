@@ -80,7 +80,7 @@ def dynamicProgram(N,Attractions):
                     pathPrev = PrevMatrix[indexPrev][timePrev]
                     #If the attraction at the finish time is already in the path
                     #We may not visit it again
-                    if indexPrev in pathPrev:
+                    if indexFinish in pathPrev and indexFinish != 0:
                         continue
                     #If there is a valid path to the previous attraction at required time
                     #then we get the utility at that time
@@ -138,7 +138,7 @@ def dynamicProgram(N,Attractions):
                     pathPrev = PrevMatrix[indexPrev][timePrev]
                     #If the attraction at the finish time is already in the path
                     #We may not visit it again
-                    if indexPrev in pathPrev:
+                    if indexFinish in pathPrev and indexFinish != 0:
                         continue
                     #If there is a valid path to the previous attraction at required time
                     #then we get the utility at that time plus the utility from this attraction
